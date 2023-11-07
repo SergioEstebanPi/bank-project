@@ -1,0 +1,53 @@
+version: '3.7'
+
+services:
+
+  bank-web:
+    build:
+      context: bank-web
+      dockerfile: Dockerfile
+    hostname: localhost
+    depends_on:
+     - bank-api
+    ports:
+      - "4200:4200"
+    networks:
+      - spring
+
+  bank-api:
+    build:
+      context: bank-api
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    restart: always
+    depends_on:
+      - mysqldb
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/devsu?useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: devsu
+    command: --spring.profiles.active=development
+    networks:
+      - spring
+
+  mysqldb:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'devsu'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'devsu'
+      MYSQL_ROOT_PASSWORD: 'root'
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - "./bank-api/scriptDB/db.sql:/docker-entrypoint-initdb.d/1.sql"
+    networks:
+      - spring
+
+networks:
+  spring:
+

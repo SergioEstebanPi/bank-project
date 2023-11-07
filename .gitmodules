@@ -1,0 +1,6 @@
+[submodule "bank-api"]
+	path = bank-api
+	url = https://github.com/SergioEstebanPi/bank-api.git
+[submodule "bank-web"]
+	path = bank-web
+	url = https://github.com/SergioEstebanPi/bank-web.git
